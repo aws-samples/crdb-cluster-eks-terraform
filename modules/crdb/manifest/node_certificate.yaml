@@ -1,0 +1,63 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cockroachdb-node
+spec:
+  # Secret names are always required.
+  secretName: cockroachdb-node
+  secretTemplate:
+    annotations:
+      reloader.stakater.com/match: "true"
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+      - APG
+  # The use of the common name field has been deprecated since 2000 and is
+  # discouraged from being used.
+  commonName: node
+  isCA: false
+  privateKey:
+    # When the cert is renewed, also make a new private key (more secure)
+    rotationPolicy: Always
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  # keySize: 2048
+  # keyAlgorithm: rsa
+  # keyEncoding: pkcs1
+  usages:
+  - client auth
+  - server auth
+  dnsNames:
+  - localhost
+  - "*.cdb-cockroachdb.default.svc.cluster.local"
+  - "*.cdb-cockroachdb"
+  - cdb-cockroachdb-public
+  - cdb-cockroachdb-public.default.svc.cluster.local
+  - cdb.default.svc.cluster.local
+  - "*.cockroachdb.${namespace}"
+  - "*.cockroachdb.default"
+  - "cockroachdb-public"
+  - "cockroachdb-public.${namespace}"
+  - "cockroachdb-public.${namespace}.svc.cluster.local"
+  - cdb
+  - "${crdb_cluster}"
+  - "${crdb_cluster}.${namespace}"
+  - "${crdb_cluster}.${namespace}.svc.cluster.local"
+  - "${crdb_cluster}-public"
+  - "${crdb_cluster}-public.${namespace}"
+  - "${crdb_cluster}-public.${namespace}.svc.cluster.local"
+  - "*.${crdb_cluster}.${namespace}"
+  ipAddresses:
+  - 127.0.0.1
+  - '::'
+  # Issuer references are always required.
+  issuerRef:
+    name: cockroachdb-issuer
+    # We can reference ClusterIssuers by changing the kind here.
+    # The default value is Issuer (i.e. a locally namespaced Issuer)
+    kind: Issuer
+    # This is optional since cert-manager will default to this value however
+    # if you are using an external issuer, change this to that issuer group.
+    group: cert-manager.io

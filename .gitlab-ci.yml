@@ -1,0 +1,29 @@
+# Workflow image
+image:
+  name: hashicorp/terraform:0.13.2
+  entrypoint:
+    - "/usr/bin/env"
+    - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# Provides the Terraform version and reconfigures the backend state during init
+# Note: The leading dot (.) ignores this as a "job" while the ampersand (&) is an Anchor declaring the script as a variable to use elsewhere
+.terraform-ver-init: &terraform-ver-init
+  - terraform version
+
+# Provides a list of stages for this GitLab workflow
+stages:
+  - validate
+
+# Job: tflint | Stage: Validate
+# Purpose: Lint the Terraform configuration using tflint (only works with Terraform 0.12 code)
+tflint:
+  image:
+    name: wata727/tflint:latest
+    entrypoint:
+      - "/usr/bin/env"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  stage: validate
+  script:
+    - tflint -v
+    - tflint
+  allow_failure: true

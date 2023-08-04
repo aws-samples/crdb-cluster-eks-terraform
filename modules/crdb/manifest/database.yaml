@@ -1,0 +1,60 @@
+apiVersion: crdb.cockroachlabs.com/v1alpha1
+kind: CrdbCluster
+metadata:
+  # this translates to the name of the statefulset that is created
+  name: cockroachdb
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node
+            operator: In
+            values:
+            - cockroachdb
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/instance
+            operator: In
+            values:
+            - cockroachdb
+        topologyKey: kubernetes.io/hostname
+  maxSQLMemory: ${max_sql_memory}
+  dataStore:
+    pvc:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: ${persistent_volume_size}
+        volumeMode: Filesystem
+        storageClassName: ${storageClassName}
+  resources:
+    requests:
+      cpu: ${cpu_requests}
+      memory: ${memory_request}
+    limits:
+      cpu: ${cpu_limit}
+      memory: ${memory_limit}
+  tlsEnabled: true
+# You can set either a version of the db or a specific image name
+# cockroachDBVersion: v22.2.2
+  image:
+    name: cockroachdb/cockroach:v22.2.2
+  # nodes refers to the number of crdb pods that are created
+  # via the statefulset
+  nodes: ${number_of_nodes}
+  additionalArgs:
+  # - "--locality=region=${region},zone=$(curl http://169.254.169.254/latest/meta-data/placement/availability-zone/)"
+  # - '--locality=region=${region},zone=$(bash -c "TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600");curl --max-time 10 --retry 5 --silent "http://169.254.169.254/latest/meta-data/placement/availability-zone" -H "X-aws-ec2-metadata-token: $TOKEN"")'
+  - '--locality=region=${region},zone=$(TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600");curl --max-time 10 --retry 5 --silent "http://169.254.169.254/latest/meta-data/placement/availability-zone" -H "X-aws-ec2-metadata-token: $TOKEN")'
+
+  - --max-disk-temp-storage=${max-disk-temp-storage}
+  additionalLabels:
+    crdb: is-cool
+
+  

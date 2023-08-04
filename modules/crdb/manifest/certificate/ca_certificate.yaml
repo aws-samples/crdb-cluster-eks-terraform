@@ -1,0 +1,30 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cockroachdb-ca
+spec:
+  secretName: cockroachdb-ca
+  secretTemplate:
+    annotations:
+      reloader.stakater.com/match: "true"
+  commonName: CockroachDB CA
+  # duration and renewBefore fields don't accept a unit larger than hours
+  # duration: 87660h # 10 years
+  # renewBefore: 1440h # 60 days
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+      - APG
+  isCA: true
+  privateKey:
+    # When the cert is renewed, also make a new private key (more secure)
+    rotationPolicy: Always
+  issuerRef:
+    name: selfsigning-issuer
+    kind: Issuer
+  usages:
+  - client auth
+  - server auth
+  - digital signature
+  - key encipherment

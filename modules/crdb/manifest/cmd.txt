@@ -1,0 +1,10 @@
+SET CLUSTER SETTING  cluster.organization = ${cluster_organization};
+SET CLUSTER SETTING  sql.log.slow_query.latency_threshold = '${sql_log_slow_query_latency_threshold}';
+SET CLUSTER SETTING  sql.stats.persisted_rows.max = ${sql_stats_persisted_rows_max};
+SET CLUSTER SETTING  server.time_until_store_dead = '${server_time_until_store_dead}';
+SET CLUSTER SETTING  admission.kv.enabled = ${admission_kv_enabled};
+SET CLUSTER SETTING  admission.sql_kv_response.enabled = ${admission_sql_kv_response_enabled};
+SET CLUSTER SETTING  admission.sql_sql_response.enabled = ${admission_sql_sql_response_enabled};
+SET CLUSTER SETTING  kv.snapshot_rebalance.max_rate = '${kv_snapshot_rebalance_max_rate}';
+SET CLUSTER SETTING  kv.snapshot_recovery.max_rate = '${kv_snapshot_recovery_max_rate}';
+SHOW CLUSTER SETTINGS;
