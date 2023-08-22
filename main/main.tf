@@ -13,4 +13,5 @@ module "crdb" {
   max-disk-temp-storage  = "32GiB"
   persistent_volume_size = "60Gi"
   additional_tags        = module.common-tags.tags
+  create_gp3_storage_class = true
 }

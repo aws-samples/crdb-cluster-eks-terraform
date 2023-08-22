@@ -21,16 +21,61 @@ metadata:
   name: cockroachdb-client-secure
   annotations:
     reloader.stakater.com/search: "true"
+    seccomp.security.alpha.kubernetes.io/pod: "runtime/default"
 spec:
   serviceAccountName: ${serviceaccount}
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    seccompProfile:
+      type: RuntimeDefault
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - NET_RAW
+        - ALL
   containers:
   - name: cockroachdb-client-secure
-    image: cockroachdb/cockroach:v22.1.2
-    imagePullPolicy: IfNotPresent
+    image: cockroachdb/cockroach@sha256:04a55dfae8e10e9b2c517fd6fd7aa76574895f76b4e2098f287b542de6db3766
+    securityContext:
+      # runAsUser: 10001
+      seccompProfile:
+        type: RuntimeDefault
+      # allowPrivilegeEscalation: false
+      # readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - NET_RAW
+          - ALL
+    # ports:
+    # - name: liveness-port
+    #   containerPort: 8080
+    #   hostPort: 8080
+    # livenessProbe :
+    #   httpGet:
+    #     path: /health
+    #     port: liveness-port
+    #   initialDelaySeconds: 2
+    # readinessProbe:
+    #     exec:
+    #       command:
+    #       - echo 'test'
+    #     initialDelaySeconds: 2
+    #     periodSeconds: 2
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: 500m        
+    imagePullPolicy: Always
     volumeMounts:
     - name: client-certs
       mountPath: /cockroach/cockroach-certs/
     command:
+    # - kube-apiserver
+    #   - --enable-admission-plugins=AlwaysPullImages
     - sleep
     - "2147483648" # 2^31
   terminationGracePeriodSeconds: 0
@@ -50,4 +95,4 @@ spec:
                   path: client.root.crt
                 - key: tls.key
                   path: client.root.key
-        defaultMode: 256
+        defaultMode: 256 

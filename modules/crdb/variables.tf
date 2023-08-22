@@ -138,3 +138,7 @@ variable "apply_cluster_settings" {
   type    = bool
   default = false
 }
+variable "create_gp3_storage_class" {
+  type    = bool
+  default = true
+}

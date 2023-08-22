@@ -20,6 +20,7 @@ resource "kubernetes_namespace" "namespace" {
 }
 
 resource "kubernetes_storage_class" "gp3" {
+  count = var.create_gp3_storage_class ? 1 : 0
   metadata {
     name = "gp3"
   }
