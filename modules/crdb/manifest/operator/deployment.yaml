@@ -17,16 +17,17 @@ spec:
       annotations:   
         seccomp.security.alpha.kubernetes.io/pod: "runtime/default"
     spec:
-      # securityContext:
-      #   runAsNonRoot: true
-      #   runAsUser: 10001
-      #   seccompProfile:
-      #     type: RuntimeDefault
-      #   allowPrivilegeEscalation: false
-      #   capabilities:
-      #     drop:
-      #       - NET_RAW
-      #       - ALL
+      # automountServiceAccountToken: false
+      securityContext:
+        # runAsNonRoot: true
+        # runAsUser: 10001
+        # seccompProfile:
+        #   type: RuntimeDefault
+        allowPrivilegeEscalation: false
+        # capabilities:
+        #   drop:
+        #     - NET_RAW
+        #     - ALL
       containers:
       - args:
         - -zap-log-level
@@ -212,10 +213,10 @@ spec:
         name: cockroach-operator
         securityContext:
           # runAsNonRoot: true
-          # runAsUser: 10001
+          runAsUser: 10001
           seccompProfile:
             type: RuntimeDefault
-          # allowPrivilegeEscalation: false
+          allowPrivilegeEscalation: false
           # readOnlyRootFilesystem: true
           capabilities:
             drop:
