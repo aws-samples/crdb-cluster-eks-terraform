@@ -37,8 +37,7 @@ This repo provides a Terraform Module that can be used to deploy CRDB  multi nod
 ### Setup	
 
  - git clone   https://github.com/aws-samples/crdb-cluster-eks-terraform.git
- - Open variable.tf under main folder.
- - Configure Installation Region, EKS Cluster Name, Number of Nodes to be deployed.
+ - Update variable.tf under main folder to the required value. For more information on all variables, refer to the README file inside `modules/crdb` folder. 
 
 ### Install 
 
@@ -56,7 +55,7 @@ kubectl version
     
 
 ```
-aws eks update-kubeconfig —name <eks_cluster_name>
+aws eks update-kubeconfig --name <eks_cluster_name> --region <AWS_Region_Name>
 ```
 
 -   Verify number of CRDB pods using
@@ -70,41 +69,37 @@ aws eks update-kubeconfig —name <eks_cluster_name>
 NAME                                  READY   STATUS    RESTARTS   AGE
 cockroach-operator-655fbf7847-zn9v8   1/1     Running   0          30m
 cockroachdb-0                         1/1     Running   0          24m
-cockroachdb-1                         1/1    Running   0          24m
+cockroachdb-1                         1/1     Running   0          24m
 cockroachdb-2                         1/1     Running   0          24m
-cockroachdb-3                         1/1     Running   0          30s
 ```
 
--   4 cockroach dB pods will be running as the default value in the variable.tf is set to 4. This may vary based on the value set on variable.tf file.
+-   3 cockroach dB pods will be running as the default value in the variable.tf is set to 3. This may vary based on the value set on variable.tf file.
     
 
 **Scale up/down:**
 
--   Increase/decrease the number of nodes for managed node group in ./main/variable.tf and perform
+-   Increase/decrease the number of nodes for managed node group in ./main/variable.tf and perform ```terraform apply ```
+
+**Note** - Due to POD anti-affinity rule, only one CRDB Pod can run in one EKS worker note. Hence,use [EKS autoscaler](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md) or [Karpenter](https://karpenter.sh/docs/) for autoscaling worker nodes automcatically to run the additional CRDB nodes (POD)
     
 
-```
-terraform apply 
-```
 
--   once apply is successful, now verify the number of CRDB pods using
+
+-   For example, if number of nodes is increased from 3 to 4, you would see 4 pods are running after executing `terraform apply`
     
 
-```
-kubectl get pods -n <namespace>
-```
 
--   Now crdb pods will scale in or out based on the value and corresponds to managed node group due to affinity rules.
-    
-    ```
+`kubectl get pods -n <namespace>`
+
+
+
     NAME                                  READY   STATUS    RESTARTS   AGE
     cockroach-operator-655fbf7847-zn9v8   1/1     Running   0          30m
     cockroachdb-0                         1/1     Running   0          24m
-    cockroachdb-1                         1/1    Running   0          24m
+    cockroachdb-1                         1/1     Running   0          24m
     cockroachdb-2                         1/1     Running   0          24m
     cockroachdb-3                         1/1     Running   0          30s
-    cockroachdb-4                         1/1     Running   0          30s
-    ```
+
 ### Clean Up
 To tear down, run
 
@@ -137,8 +132,8 @@ terraform destroy
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name of the EKS Cluster | `string` | `"demo2"` | no |
-| <a name="input_number_of_nodes"></a> [number\_of\_nodes](#input\_number\_of\_nodes) | Number of nodes to be deployed | `number` | `4` | no |
+| <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name of the EKS Cluster | `string` | `"demo"` | no |
+| <a name="input_number_of_nodes"></a> [number\_of\_nodes](#input\_number\_of\_nodes) | Number of nodes to be deployed | `number` | `3` | no |
 | <a name="input_region"></a> [region](#input\_region) | set the region for deployment | `string` | `"us-east-2"` | no |
 
 ## Outputs

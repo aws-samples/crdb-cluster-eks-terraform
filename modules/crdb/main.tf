@@ -96,7 +96,7 @@ data "template_file" "database" {
   vars = {
     number_of_nodes        = var.number_of_nodes
     cpu_requests           = var.cpu_requests
-    memory_request         = var.remory_request
+    memory_request         = var.memory_request
     cpu_limit              = var.cpu_limit
     memory_limit           = var.memory_limit
     persistent_volume_size = var.persistent_volume_size

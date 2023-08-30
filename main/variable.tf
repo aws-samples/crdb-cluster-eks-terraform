@@ -1,11 +1,11 @@
 variable "region" {
   description = "set the region for deployment"
-  default     = "us-west-1"
+  default     = "us-east-2"
 }
 
 variable "eks_cluster_name" {
   description = "Name of the EKS Cluster"
-  default     = "mycrdb1"
+  default     = "demo"
 }
 
 variable "number_of_nodes" {
