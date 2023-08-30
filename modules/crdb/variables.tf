@@ -36,7 +36,7 @@ variable "operator_manifest_directory" {
 variable "namespace" {
   description = "Namespace name for resource creation"
   type        = string
-  default     = ""
+  default     = "staging"
 }
 # variable "crdb_cluster" {
 #   description = "The name appended to the crdb cluster statefulset"
@@ -163,11 +163,6 @@ variable "kv_snapshot_recovery_max_rate" {
   description = "Describes the rate limit (bytes/sec) to use for recovery"
   type        = string
   default     = "64 MiB"
-}
-variable "apply_cluster_settings" {
-  description = "When true, cluster custom settings are applied"
-  type        = bool
-  default     = false
 }
 variable "create_gp3_storage_class" {
   description = "When set to true, creates the gp3 storage class"
