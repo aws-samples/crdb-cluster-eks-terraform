@@ -75,11 +75,12 @@ cockroachdb-2                         1/1     Running   0          24m
 cockroachdb-3                         1/1     Running   0          30s
 ```
 
--   4 cockroach dB pods will be running as the default value in the variable.tf is set to 4. This may vary based on the value set on variable.tf file.
+-   3 cockroach dB pods will be running as the default value in the variable.tf is set to 3. This may vary based on the value set on variable.tf file.
     
 
 **Scale up/down:**
 
+-   use [EKS autoscaler](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md) or [Karpenter](https://karpenter.sh/docs/) for autoscaling nodes.
 -   Increase/decrease the number of nodes for managed node group in ./main/variable.tf and perform
     
 
